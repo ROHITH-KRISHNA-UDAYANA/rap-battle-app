@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rap Battle</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .chat-box { width: 300px; margin: auto; border: 1px solid black; padding: 10px; }
+        .message { margin: 5px; padding: 8px; border-radius: 5px; }
+        .user { background: lightblue; text-align: left; }
+        .bot { background: lightgray; text-align: right; }
+    </style>
+</head>
+<body>
+    <h1>Rap Battle</h1>
+    <div class="chat-box" id="chatBox"></div>
+    <input type="text" id="userInput" placeholder="Drop your bar...">
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        function sendMessage() {
+            let input = document.getElementById("userInput").value;
+            if (!input) return;
+
+            let chatBox = document.getElementById("chatBox");
+            chatBox.innerHTML += `<div class="message user">${input}</div>`;
+
+            fetch("http://127.0.0.1:8000/rap", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: input })
+            })
+            .then(response => response.json())
+            .then(data => {
+                chatBox.innerHTML += `<div class="message bot">${data.response}</div>`;
+            });
+
+            document.getElementById("userInput").value = "";
+        }
+    </script>
+</body>
+</html>
